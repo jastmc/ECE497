@@ -43,6 +43,7 @@ int set_gpio_direction(int gpio, char* direction){
 	char* path;
 
 	//create path using specified gpio
+	printf("%d\n",gpio);
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);
 	
 	//open direction file
@@ -82,7 +83,7 @@ int set_gpio_value(int gpio, int value){
 
 	printf("direction is %s\n", direction);
 
-	fflush(fp);
+	fflush(fp);git
 	fclose(fp);
 
 }
