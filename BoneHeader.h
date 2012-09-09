@@ -72,7 +72,7 @@ int set_gpio_value(int gpio, int value){
 	
 	if(fgets(direction, sizeof direction, fp) != NULL){
 		fflush(fp);
-		if(!strcmp(direction, "in")){
+		if(strcmp(direction, "in")){
 			printf("Direction is set to 'in'. Cannot change value\n");
 			return 1;
 		}
