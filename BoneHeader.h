@@ -43,10 +43,7 @@ int set_gpio_direction(int gpio, char* direction){
 	char* path;
 
 	//create path using specified gpio
-	printf("%d\n",gpio);
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);
-	fflush(NULL);
-	printf("%s --- %d\n", path, gpio);
 	//open direction file
 	if((fp = fopen(path, "w")) == NULL){
 		printf("Cannot open specified direction file. Is gpio%d exported?\n", gpio);
