@@ -24,7 +24,7 @@ int export_gpio(int gpio){
 	FILE *fp;
 	
 	//open the export file
-	if((fp = fopen("sys/class/gpio/export", "ab")) == NULL){
+	if((fp = fopen("/sys/class/gpio/export", "ab")) == NULL){
 		printf("Cannot open export file. \n");
 		return 1;
 	}
@@ -43,7 +43,7 @@ int set_gpio_direction(int gpio, char* direction){
 	char* path;
 
 	//create path using specified gpio
-	sprintf(path, "sys/class/gpio/gpio%d/direction", gpio);
+	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);
 	
 	//open direction file
 	if((fp = fopen(path, "w")) == NULL){
@@ -64,7 +64,7 @@ int set_gpio_value(int gpio, int value){
 	char direction[10];
 
 	//create path using specified gpio
-	sprintf(path, "sys/class/gpio/gpio%d/direction", gpio);	
+	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);	
 	
 	if((fp = fopen(path, "w")) == NULL){
 		printf("Cannot open specified direction file. is gpio %d exported?\n", gpio);
