@@ -66,26 +66,35 @@ int set_gpio_value(int gpio, int value){
 	char* pdirection;
 	pdirection = direction;
 
-	//create path using specified gpio
+	//make sure that the direction is out before setting value
 	snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/direction", gpio);	
 	
 	if((fp = fopen(path, "r")) == NULL){
 		printf("Cannot open specified direction file. is gpio %d exported?\n", gpio);
+		return 1;
 	}
 	
 	if(fgets(direction, sizeof direction, fp) != NULL){
 		fflush(fp);
-		/*if(!strcmp(pdirection, "in")){
+		if(!strcmp(pdirection, "in")){
 			printf("Direction is set to 'in'. Cannot change value\n");
 			return 1;
-		}*/
+		}
+	}
+	
+	//set value only if direction is out
+	snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/value", gpio);
+	
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open specified value file.\n", gpio);
+		return 1;
 	}
 
-	printf("direction is %s\n", direction);
-
+	//write 1 or 0 to value file
+	rewind(fp);
+	fprintf(fp, value, gpio);
 	fflush(fp);
 	fclose(fp);
-
 }
 	
 	
