@@ -45,6 +45,7 @@ int set_gpio_direction(int gpio, char* direction){
 	//create path using specified gpio
 	printf("%d\n",gpio);
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);
+	fflush(NULL);
 	printf("%s --- %d\n", path, gpio);
 	//open direction file
 	if((fp = fopen(path, "w")) == NULL){
@@ -75,10 +76,10 @@ int set_gpio_value(int gpio, int value){
 	
 	if(fgets(direction, sizeof direction, fp) != NULL){
 		fflush(fp);
-		if(!strcmp(pdirection, "in")){
+		/*if(!strcmp(pdirection, "in")){
 			printf("Direction is set to 'in'. Cannot change value\n");
 			return 1;
-		}
+		}*/
 	}
 
 	printf("direction is %s\n", direction);
