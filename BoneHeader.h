@@ -20,6 +20,8 @@ int set_gpio_value(int gpio, int value);
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_BUF 127
+
 int export_gpio(int gpio){
 	FILE *fp;
 	
@@ -40,10 +42,10 @@ int export_gpio(int gpio){
 
 int set_gpio_direction(int gpio, char* direction){
 	FILE *fp;
-	char* path;
+	char path[MAX_BUF];
 
 	//create path using specified gpio
-	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);
+	snprintf(path, sizeof path,"/sys/class/gpio/gpio%d/direction", gpio);
 	//open direction file
 	if((fp = fopen(path, "w")) == NULL){
 		printf("Cannot open specified direction file. Is gpio%d exported?\n", gpio);
@@ -59,13 +61,13 @@ int set_gpio_direction(int gpio, char* direction){
 
 int set_gpio_value(int gpio, int value){
 	FILE *fp;
-	char* path;
+	char path[MAX_BUF];
 	char direction[10];
 	char* pdirection;
 	pdirection = direction;
 
 	//create path using specified gpio
-	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);	
+	snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/direction", gpio);	
 	
 	if((fp = fopen(path, "r")) == NULL){
 		printf("Cannot open specified direction file. is gpio %d exported?\n", gpio);
