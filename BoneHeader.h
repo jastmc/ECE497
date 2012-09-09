@@ -82,6 +82,9 @@ int set_gpio_value(int gpio, int value){
 
 	printf("direction is %s\n", direction);
 
+	fflush(fp);
+	fclose(fp);
+
 }
 	
 	
