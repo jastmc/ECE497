@@ -63,7 +63,7 @@ int set_gpio_value(int gpio, int value){
 	char* path;
 	char direction[10];
 	char* pdirection;
-	pdirection = &direction;
+	pdirection = direction;
 
 	//create path using specified gpio
 	sprintf(path, "/sys/class/gpio/gpio%d/direction", gpio);	
