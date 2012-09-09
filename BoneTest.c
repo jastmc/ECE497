@@ -8,7 +8,7 @@ int main(int argc, char** argv){
 	export_gpio(60);
 	set_gpio_direction(60, "out");
 	set_gpio_value(60, 1);
-	set_gpio_direction(60, "in");
+	set_gpio_direction(60, "out");
 	set_gpio_value(60, 1);
 	return 0;
 }
