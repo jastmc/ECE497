@@ -54,7 +54,7 @@ int set_gpio_direction(int gpio, char* direction){
 
 	//write "in" or "out" to direction file
 	rewind(fp);
-	fprintf(fp, direction, gpio);
+	fprintf(fp, direction);
 	fflush(fp);
 	fclose(fp);
 }
@@ -92,7 +92,7 @@ int set_gpio_value(int gpio, int value){
 
 	//write 1 or 0 to value file
 	rewind(fp);
-	fprintf(fp, value, gpio);
+	fprintf(fp, "%d\n", value);
 	fflush(fp);
 	fclose(fp);
 }
