@@ -72,6 +72,7 @@ int set_gpio_value(int gpio, int value){
 	
 	if(fgets(direction, sizeof direction, fp) != NULL){
 		fputs(direction, stdout);
+		fflush(stdout);
 	}
 
 	printf("direction is %s\n", direction);
