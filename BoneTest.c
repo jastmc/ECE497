@@ -4,7 +4,7 @@
 
 //inherits
 //
-// int exort_gpio(int gpio);
+// int export_gpio(int gpio);
 // int unexport_gpio(int gpio);
 // int set_gpio_direction(int gpio, char* direction);
 // int set_gpio_value(int gpio, int value);
@@ -26,7 +26,7 @@ int main(int argc, char** argv){
 		
 	//check that at least two arguments are passed in
 	if(argc < 3){
-		printf("Usage:\n%s <input-gpio> <output-gpio>");
+		printf("Usage:\n%s <input-gpio> <output-gpio>", argv[0]);
 		printf("polls input-gpio, and writes value to output-gpio");
 	}
 
@@ -44,14 +44,14 @@ int main(int argc, char** argv){
 
 	//argument 2 will be output
 	export_gpio(gpio2);
-	set_gpio_direction(gpio2), "out");
+	set_gpio_direction(gpio2, "out");
 	set_gpio_value(gpio2, 0);
 
 
 	while(keepgoing){}
 
-	unexport(gpio1);
-	unexport(gpio2);
+	unexport_gpio(gpio1);
+	unexport_gpio(gpio2);
 
 	return 0;
 }

@@ -99,7 +99,7 @@ int set_gpio_direction(int gpio, char* direction){
 
 	//write "in" or "out" to direction file
 	rewind(fp);
-	fprintf(fp, direction);
+	fprintf(fp, "%s\n", direction);
 	fflush(fp);
 	fclose(fp);
 }
@@ -124,7 +124,7 @@ int set_gpio_value(int gpio, int value){
 }
 
 int set_gpio_edge(int gpio, char* edge){
-	FILE *fp
+	FILE *fp;
 	char path[MAX_BUF];
 	
 	//create path using specified gpio	
@@ -137,7 +137,7 @@ int set_gpio_edge(int gpio, char* edge){
 
 	//write "rising", "falling", or "both" to edge file
 	rewind(fp);
-	fprintf(fp, edge);
+	fprintf(fp, "%s\n", edge);
 	fflush(fp);
 	fclose(fp);
 
