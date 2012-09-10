@@ -26,8 +26,10 @@ int main(int argc, char** argv){
 		
 	//check that at least two arguments are passed in
 	if(argc < 3){
-		printf("Usage:\n%s <input-gpio> <output-gpio>", argv[0]);
-		printf("polls input-gpio, and writes value to output-gpio");
+		printf("Usage: %s <input-gpio> <output-gpio>\n", argv[0]);
+		printf("polls input-gpio, and writes value to output-gpio\n");
+		fflush(stdout);
+		return 1;
 	}
 
 	//set signal handler
