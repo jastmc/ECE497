@@ -1,19 +1,24 @@
+//***********************************************
 //export gpio pin on the BeagleBone to prepare for usage
 //
 //USAGE: specify gpio # as an int
 //
 //written by: 	Andrew Miller
 //Date:		9 September 2012
+//***********************************************
 int export_gpio(int gpio);
 
+//***********************************************
 //unexport gpio pin on the BeagleBone
 //
 //USAGE: specify gpio # as an int
 //
 //written by: 	Andrew Miller
 //Date:		9 September 2012
+//***********************************************
 int unexport_gpio(int gpio);
 
+//***********************************************
 //set direction of gpio to either in or out specified by string
 //GPIO MUST BE EXPORTED
 //
@@ -22,6 +27,7 @@ int unexport_gpio(int gpio);
 //
 //written by:	Andrew Miller
 //Date:		9 September 2012
+//***********************************************
 int set_gpio_direction(int gpio, char* direction);
 
 //set value of gpio
@@ -34,6 +40,7 @@ int set_gpio_direction(int gpio, char* direction);
 //Date:		9 September 2012
 int set_gpio_value(int gpio, int value);int gpio_fd_open(int gpio);
 
+//***********************************************
 //set trigger edge for given gpio pin
 //GPIO MUST BE EXPORTED
 //
@@ -42,8 +49,10 @@ int set_gpio_value(int gpio, int value);int gpio_fd_open(int gpio);
 //
 //written by: 	Andrew Miller
 //Date:		10 September 2012
+//***********************************************
 int set_gpio_edge(int gpio, char* edge);
 
+//***********************************************
 //set file descriptor
 //GPIO MUST BE EXPORTED
 //
@@ -51,8 +60,10 @@ int set_gpio_edge(int gpio, char* edge);
 //
 //written:	by RidgeRun
 //Date:		2011
+//***********************************************
 int gpio_fd_open(int gpio);
 
+//***********************************************
 //close file descriptor
 //GPIO MUST BE EXPORTED
 //
@@ -60,7 +71,37 @@ int gpio_fd_open(int gpio);
 //
 //written by:	RidgeRun
 //Date:		2011
+//***********************************************
 int gpio_fd_close(int fd);
+
+//***********************************************
+//set new value for omap_mux
+//
+//to see all muxes and possible values, look at
+// /sys/kernel/debug/omap_mux
+//
+//all muxes are listed here. grep if looking for
+//any particular component or cat into any mux to
+//see what is attached.
+//
+//USAGE: provide mux name as a string EX) "gpmc_a11"
+//USAGE: provide the mux enable as an int from 0-7
+//
+//written by: 	Andrew Miller
+//Date:		10 September 2012
+//***********************************************
+int set_mux_value(char* mux, int value);
+
+//***********************************************
+//read specified anilog pin
+//
+//USAGE: specify ain1-7 for reading Ex) "ain6"
+//	 will read ain5
+//
+//written by:	Andrew Miller
+//Date:		10 September 2012
+//***********************************************
+int read_ain(char* ain);
 
 #include <string.h>
 #include <stdio.h>
@@ -68,6 +109,11 @@ int gpio_fd_close(int fd);
 #include <fcntl.h>
 
 #define MAX_BUF 127
+
+
+/****************************************************************
+ * export_gpio
+ ****************************************************************/
 
 int export_gpio(int gpio){
 	FILE *fp;
@@ -87,6 +133,10 @@ int export_gpio(int gpio){
 	return 0;
 }
 
+/****************************************************************
+ * unexport_gpio
+ ****************************************************************/
+
 int unexport_gpio(int gpio){
 	FILE *fp;
 	
@@ -103,6 +153,10 @@ int unexport_gpio(int gpio){
 
 	return 0;
 }
+
+/****************************************************************
+ * set_gpio_direction
+ ****************************************************************/
 
 int set_gpio_direction(int gpio, char* direction){
 	FILE *fp;
@@ -123,6 +177,10 @@ int set_gpio_direction(int gpio, char* direction){
 	fclose(fp);
 }
 
+/****************************************************************
+ * set_gpio_value
+ ****************************************************************/
+
 int set_gpio_value(int gpio, int value){
 	FILE *fp;
 	char path[MAX_BUF];
@@ -141,6 +199,10 @@ int set_gpio_value(int gpio, int value){
 	fflush(fp);
 	fclose(fp);
 }
+
+/****************************************************************
+ * set_gpio_edge
+ ****************************************************************/
 
 int set_gpio_edge(int gpio, char* edge){
 	FILE *fp;
@@ -188,10 +250,50 @@ int gpio_fd_close(int fd)
 {
 	return close(fd);
 }
-	
-	
 
+/****************************************************************
+ * set_mux_value
+ ****************************************************************/
+int set_mux_value(char* mux, int value){
+	FILE *fp;
+	char path[MAX_BUF];
+
+	snprintf(path, sizeof path, "/sys/kernel/debug/omap_mux/%s", mux);
 	
+	if((fp = fopen(path, "w") == NULL){
+		printf("Cannot open specified mux, %s\n", mux);
+		return 1;
+	}
+	
+	rewind(fp);
+	fprintf(fp, "%d\n", value);
+	fflush(fp);
+	fclose(fp);
+
+}
+	
+/****************************************************************
+ * read_ain
+ ****************************************************************/
+int read_ain(char* ain){
+	FILE *fp;
+	char path[MAX_BUF];
+	char buf[MAX_BUF];
+
+	snprintf(path, sizeof path, "/sys/devices/platform/omap/tsc/%s", ain);
+
+	if((fp = fopen(path, "r") == NULL){
+		printf("Cannot open specified ain pin, %s\n", ain);
+		return 1;
+	}
+
+	if(fgets(buf, MAX_BUF, fp) == NULL){
+		printf("Cannot read specified ain pin, %s\n", ain);
+	}
+	
+	fclose(fp);
+	return atoi(buf);	
+}
 	
 	
 

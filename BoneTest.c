@@ -1,6 +1,8 @@
 #include "BoneHeader.h"
 #include <poll.h>
 #include <signal.h>
+#include <errno.h>
+#include <unistd.h>
 
 
 //inherits
@@ -15,9 +17,11 @@
 int keepgoing = 1;
 
 //signal handler that breaks program loop and cleans up
-void signal_handler(int sig){
-	printf("^C pressed, unexporting gpios and exiting..\n");
-	keepgoing = 0;
+void signal_handler(int signo){
+	if (signo == SIGINT) {
+		printf("\n^C pressed, unexporting gpios and exiting..\n");
+		keepgoing = 0;
+	}
 }
 
 int main(int argc, char** argv){
@@ -27,6 +31,8 @@ int main(int argc, char** argv){
 	int nfds = 1;
 	int timeout = 3000;
 	int rc;
+	char* buf[MAX_BUF];	
+	
 	int gpio1, gpio2;
 	int gpio1_fd, gpio2_fd;
 	int gpio2_value = 0;
@@ -40,7 +46,8 @@ int main(int argc, char** argv){
 	}
 
 	//set signal handler
-	signal(SIGINT, signal_handler);
+	if (signal(SIGINT, signal_handler) == SIG_ERR)
+		printf("\ncan't catch SIGINT\n");
 
 	//assign gpio values
 	gpio1 = atoi(argv[1]);
@@ -49,7 +56,7 @@ int main(int argc, char** argv){
 	//argument 1 will be input
 	export_gpio(gpio1);
 	set_gpio_direction(gpio1, "in");
-	set_gpio_edge(gpio1, "rising");
+	set_gpio_edge(gpio1, "falling");
 	gpio1_fd = gpio_fd_open(gpio1);
 
 	//argument 2 will be output
@@ -72,16 +79,18 @@ int main(int argc, char** argv){
 
 		if (rc < 0){
 			printf("\npoll() failed!\n");
-			return 1;
 		}
 	
 		if (rc == 0){
 			printf(".");
 		}
 
-		if(fdset[0].revents & POLLPRI) {
+		if((fdset[0].revents & POLLPRI) == POLLPRI) {
+			read(fdset[0].fd, buf, MAX_BUF);
+			printf("interrupt value=%c\n", buf[0]);
 			gpio2_value = ~(gpio2_value)&1;
 			set_gpio_value(gpio2, gpio2_value);
+			printf("gpio2_value  = %d\n", gpio2_value);
 		}			
 		
 	}
@@ -91,5 +100,6 @@ int main(int argc, char** argv){
 	unexport_gpio(gpio1);
 	unexport_gpio(gpio2);
 
+	fflush(stdout);
 	return 0;
 }
