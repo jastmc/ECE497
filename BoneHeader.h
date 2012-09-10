@@ -6,6 +6,14 @@
 //Date:		9 September 2012
 int export_gpio(int gpio);
 
+//unexport gpio pin on the BeagleBone
+//
+//USAGE: specify gpio # as an int
+//
+//written by: 	Andrew Miller
+//Date:		9 September 2012
+int unexport_gpio(int gpio);
+
 //set direction of gpio to either in or out specified by string
 //
 //USAGE: specify gpio # as an int
@@ -15,7 +23,15 @@ int export_gpio(int gpio);
 //Date:		9 September 2012
 int set_gpio_direction(int gpio, char* direction);
 
+//set value of gpio
+//
+//USAGE: specify gpio # as an int
+//USAGE: specify value as an int of either 1 or 0
+//
+//written by:	Andrew Miller
+//Date:		9 September 2012
 int set_gpio_value(int gpio, int value);
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +53,23 @@ int export_gpio(int gpio){
 	fclose(fp);
 	
 	//return 0 if everything runs correctly
+	return 0;
+}
+
+int unexport_gpio(int gpio){
+	FILE *fp;
+	
+	//open the unexport file
+	if((fp = fopen("/sys/class/gpio/unexport", "ab")) == NULL){
+		printf("Cannot open unexport file. \n");
+		return 1;
+	}
+
+	//write specified gpio to unexport file
+	fprintf(fp, "%d\n", gpio);
+	fflush(fp);
+	fclose(fp);
+
 	return 0;
 }
 
@@ -80,6 +113,8 @@ int set_gpio_value(int gpio, int value){
 	fflush(fp);
 	fclose(fp);
 }
+
+
 	
 	
 
