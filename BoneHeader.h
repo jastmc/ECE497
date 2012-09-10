@@ -15,6 +15,7 @@ int export_gpio(int gpio);
 int unexport_gpio(int gpio);
 
 //set direction of gpio to either in or out specified by string
+//GPIO MUST BE EXPORTED
 //
 //USAGE: specify gpio # as an int
 //USAGE: specify direction as a string of either "in" or "out"
@@ -24,6 +25,7 @@ int unexport_gpio(int gpio);
 int set_gpio_direction(int gpio, char* direction);
 
 //set value of gpio
+//GPIO MUST BE EXPORTED
 //
 //USAGE: specify gpio # as an int
 //USAGE: specify value as an int of either 1 or 0
@@ -31,6 +33,16 @@ int set_gpio_direction(int gpio, char* direction);
 //written by:	Andrew Miller
 //Date:		9 September 2012
 int set_gpio_value(int gpio, int value);
+
+//set trigger edge for given gpio pin
+//GPIO MUST BE EXPORTED
+//
+//USAGE: specify gpio # as an int
+//USAGE: specify edge as a string of "rising", "falling", or "both"
+//
+//written by: 	Andrew Miller
+//Date:		10 September 2012
+int set_gpio_edge(int gpio, char* edge);
 
 #include <string.h>
 #include <stdio.h>
@@ -95,9 +107,6 @@ int set_gpio_direction(int gpio, char* direction){
 int set_gpio_value(int gpio, int value){
 	FILE *fp;
 	char path[MAX_BUF];
-	char direction[10];
-	char* pdirection;
-	pdirection = direction;
 	
 	//set value only if direction is out
 	snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/value", gpio);
@@ -114,7 +123,25 @@ int set_gpio_value(int gpio, int value){
 	fclose(fp);
 }
 
+int set_gpio_edge(int gpio, char* edge){
+	FILE *fp
+	char path[MAX_BUF];
+	
+	//create path using specified gpio	
+	snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/edge", gpio);
+	//open edge file
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open specified edge file. Is gpio%d exported?\n", gpio);
+		return 1;
+	}
 
+	//write "rising", "falling", or "both" to edge file
+	rewind(fp);
+	fprintf(fp, edge);
+	fflush(fp);
+	fclose(fp);
+
+}
 	
 	
 
