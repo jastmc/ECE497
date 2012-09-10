@@ -87,7 +87,7 @@ int main(int argc, char** argv){
 
 		if((fdset[0].revents & POLLPRI) == POLLPRI) {
 			read(fdset[0].fd, buf, MAX_BUF);
-			printf("interrupt value=%c\n", buf[0]);
+			printf("interrupt value=%s\n", buf[0]);
 			gpio2_value = ~(gpio2_value)&1;
 			set_gpio_value(gpio2, gpio2_value);
 			printf("gpio2_value  = %d\n", gpio2_value);

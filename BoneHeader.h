@@ -260,7 +260,7 @@ int set_mux_value(char* mux, int value){
 
 	snprintf(path, sizeof path, "/sys/kernel/debug/omap_mux/%s", mux);
 	
-	if((fp = fopen(path, "w") == NULL){
+	if((fp = fopen(path, "w")) == NULL){
 		printf("Cannot open specified mux, %s\n", mux);
 		return 1;
 	}
@@ -282,7 +282,7 @@ int read_ain(char* ain){
 
 	snprintf(path, sizeof path, "/sys/devices/platform/omap/tsc/%s", ain);
 
-	if((fp = fopen(path, "r") == NULL){
+	if((fp = fopen(path, "r")) == NULL){
 		printf("Cannot open specified ain pin, %s\n", ain);
 		return 1;
 	}
