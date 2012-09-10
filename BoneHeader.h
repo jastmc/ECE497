@@ -32,7 +32,7 @@ int set_gpio_direction(int gpio, char* direction);
 //
 //written by:	Andrew Miller
 //Date:		9 September 2012
-int set_gpio_value(int gpio, int value);
+int set_gpio_value(int gpio, int value);int gpio_fd_open(int gpio);
 
 //set trigger edge for given gpio pin
 //GPIO MUST BE EXPORTED
@@ -44,9 +44,28 @@ int set_gpio_value(int gpio, int value);
 //Date:		10 September 2012
 int set_gpio_edge(int gpio, char* edge);
 
+//set file descriptor
+//GPIO MUST BE EXPORTED
+//
+//USAGE: specify gpio # as an int
+//
+//written:	by RidgeRun
+//Date:		2011
+int gpio_fd_open(int gpio);
+
+//close file descriptor
+//GPIO MUST BE EXPORTED
+//
+//USAGE: give fd of open gpio
+//
+//written by:	RidgeRun
+//Date:		2011
+int gpio_fd_close(int fd);
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #define MAX_BUF 127
 
@@ -141,6 +160,33 @@ int set_gpio_edge(int gpio, char* edge){
 	fflush(fp);
 	fclose(fp);
 
+}
+
+/****************************************************************
+ * gpio_fd_open
+ ****************************************************************/
+
+int gpio_fd_open(int gpio)
+{
+	int fd, len;
+	char buf[MAX_BUF];
+
+	len = snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%d/value", gpio);
+ 
+	fd = open(buf, O_RDONLY | O_NONBLOCK );
+	if (fd < 0) {
+		perror("gpio/fd_open");
+	}
+	return fd;
+}
+
+/****************************************************************
+ * gpio_fd_close
+ ****************************************************************/
+
+int gpio_fd_close(int fd)
+{
+	return close(fd);
 }
 	
 	
