@@ -115,6 +115,17 @@ int read_ain(char* ain);
 //***********************************************
 int set_pwm(char* pwm, int period_freq, int duty_percent);
 
+//***********************************************
+//unset pwm on a given pwm output
+//
+//USAGE: specify pwm as a string EX) "ehrpwm.2:0"
+//
+//written by:	Andrew Miller
+//Date:		10 September 2012
+//***********************************************
+int unset_pwm(char* pwm);
+
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -360,4 +371,26 @@ int set_pwm(char* pwm, int period_freq, int duty_percent){
 	fclose(fp);
 }
 
+/****************************************************************
+ * unset_pwm
+ ****************************************************************/
+int unset_pwm(char* pwm){
+	FILE *fp;
+	char path[MAX_BUF];
+
+	snprintf(path, sizeof path, "/sys/class/pwm/%s/run", pwm);
+
+	if((fp = fopen(path, "w")) == NULL) {
+		printf("Cannot open pwm run file, %s\n", path);
+		return 1;
+	}
+
+	rewind(fp);
+	fprintf(fp, "0\n");
+	fflush(fp);
+	fclose(fp);
+
+	return 0;
+
+}
 
