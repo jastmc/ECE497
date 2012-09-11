@@ -38,7 +38,7 @@ int set_gpio_direction(int gpio, char* direction);
 //
 //written by:	Andrew Miller
 //Date:		9 September 2012
-int set_gpio_value(int gpio, int value);int gpio_fd_open(int gpio);
+int set_gpio_value(int gpio, int value);
 
 //***********************************************
 //set trigger edge for given gpio pin
