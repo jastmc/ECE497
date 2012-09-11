@@ -103,6 +103,18 @@ int set_mux_value(char* mux, int value);
 //***********************************************
 int read_ain(char* ain);
 
+//***********************************************
+//set pwm on a given pwm output
+//
+//USAGE: specify pwm as string, EX) ehrpwm.2:0
+//USAGE: specify period_freq in hertz
+//USAGE: specify duty cycle as percent
+//
+//written by: 	Andrew Miller
+//Date:		10 September 2012
+//***********************************************
+int set_pwm(char* pwm, int period_freq, int duty_percent);
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -294,7 +306,58 @@ int read_ain(char* ain){
 	fclose(fp);
 	return atoi(buf);	
 }
+
+/****************************************************************
+ * set_pwm
+ ****************************************************************/	
+int set_pwm(char* pwm, int period_freq, int duty_percent){
+	FILE *fp;
+	char path[MAX_BUF];
 	
+	snprintf(path, sizeof path, "/sys/class/pwm/%s/run", pwm);
 	
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open pwm run file, %s\n", path);
+		return 1;
+	}
+
+	rewind(fp);
+	fprintf(fp, "1\n");
+	fflush(fp);
+	fclose(fp);
+
+	snprintf(path, sizeof path, "/sys/class/pwm/%s/duty_ns", pwm);
+
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open pwm duty_ns file, %s\n", path);
+	}
+
+	rewind(fp);
+	fprintf(fp, "0\n");
+	fflush(fp);
+	fclose(fp);
+
+	snprintf(path, sizeof path, "/sys/class/pwm/%s/period_freq", pwm);
+
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open pwm period_freq file, %s\n", path);
+	}
+
+	rewind(fp);
+	fprintf(fp, "%d\n", period_freq);
+	fflush(fp);
+	fclose(fp);
+
+	snprintf(path, sizeof path, "/sys/class/pwm/%s/duty_percent", pwm);
+
+	if((fp = fopen(path, "w")) == NULL){
+		printf("Cannot open duty_percent file, %s\n", path);
+	}
+
+	rewind(fp);
+	fprintf(fp, "%d\n", duty_percent);
+	fflush(fp);
+	fclose(fp);
+}
 
 

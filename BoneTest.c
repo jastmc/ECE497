@@ -14,6 +14,8 @@
 // int set_gpio_edge(int gpio, char* edge);
 // int gpio_fd_open(int gpio);
 // int gpio_fd_close(int fd);
+// int set_mux_value(char* mux, int value);
+// int read_ain(char* ain);
 int keepgoing = 1;
 
 //signal handler that breaks program loop and cleans up
